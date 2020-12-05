@@ -22,9 +22,14 @@ class Exchage(QWidget):
 
         mainLayout = QGridLayout()
 
-        ########## 첫 번째 박스 ##########
+        mainLayout.addWidget(self.createStartBox(), 0, 0)
+        mainLayout.addWidget(self.createEndBox(), 1, 0)
+        self.setLayout(mainLayout)
 
-        self.startBox = QGroupBox('Start')
+    # 환전 시작 박스 생성
+    def createStartBox(self):
+
+        startBox = QGroupBox('Start')
 
         # 첫 번째 국가를 선택
         self.startNation = QComboBox()
@@ -40,13 +45,15 @@ class Exchage(QWidget):
         startLayout.addWidget(self.startNation, 0, 0)
         startLayout.addWidget(self.inputMoney, 1, 1)
 
-        self.startBox.setLayout(startLayout)
+        startBox.setLayout(startLayout)
 
-        ###############################
+        return startBox
 
-        ########## 두 번째 박스 ##########
+    # 환전 도착 박스 생성
 
-        self.endBox = QGroupBox('End')
+    def createEndBox(self):
+
+        endBox = QGroupBox('End')
 
         # 두 번째 국가를 선택
         self.endNation = QComboBox()
@@ -66,22 +73,21 @@ class Exchage(QWidget):
         endLayout.addWidget(self.endNation, 0, 0)
         endLayout.addWidget(self.displayMoney, 1, 1)
 
-        self.endBox.setLayout(endLayout)
+        endBox.setLayout(endLayout)
 
-        ###############################
-
-        mainLayout.addWidget(self.startBox, 0, 0)
-        mainLayout.addWidget(self.endBox, 1, 0)
-        self.setLayout(mainLayout)
+        return endBox
 
     # 사용자가 입력한 두 국가를 가져옴.
+
     def getNation(self, nation):
         n1 = self.startNation.currentText()
         n2 = nation
+        print(n1, n2)
         return (n1, n2)
 
     # 사용자가 입력한 금액을 가져욤.
     def getInputMoney(self):
+        print(self.inputMoney.text())
         return self.inputMoney.text()
 
 
