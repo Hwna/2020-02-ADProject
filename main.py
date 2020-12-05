@@ -54,8 +54,8 @@ class Exchage(QWidget):
         self.endNation.addItem('2')
         self.endNation.addItem('3')
 
-        # 선택한 국가를 전송
-        self.endNation.activated[str].connect(self.showNation)
+        # 두 번째 국가를 전송하면 메소드를 실행
+        self.endNation.activated[str].connect(self.getNation)
 
         # 환전한 금액을 표시
         self.displayMoney = QLineEdit()
@@ -74,9 +74,15 @@ class Exchage(QWidget):
         mainLayout.addWidget(self.endBox, 1, 0)
         self.setLayout(mainLayout)
 
-    def showNation(self, nation):
-        print(self.startNation.currentText())
-        print(nation)
+    # 사용자가 입력한 두 국가를 가져옴.
+    def getNation(self, nation):
+        n1 = self.startNation.currentText()
+        n2 = nation
+        return (n1, n2)
+
+    # 사용자가 입력한 금액을 가져욤.
+    def getInputMoney(self):
+        return self.inputMoney.text()
 
 
 if __name__ == "__main__":
