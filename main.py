@@ -3,16 +3,18 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 from PyQt5.QtWidgets import QLayout, QGridLayout, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QLabel, QPushButton, QGroupBox
 
+from exchange import calcExchange
+
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.form_widget = Exchage(self)
+        self.form_widget = Exchange(self)
         self.setCentralWidget(self.form_widget)
-        self.statusBar().showMessage('환율: ')
+        self.resize(300, 250)  # 임시 크기 조정
 
 
-class Exchage(QWidget):
+class Exchange(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.initUI()
@@ -33,6 +35,7 @@ class Exchage(QWidget):
 
         # 첫 번째 국가를 선택
         self.startNation = QComboBox()
+        self.startNation.addItem('국가 선택')
         self.startNation.addItem('1')  # 임시 값
         self.startNation.addItem('2')
         self.startNation.addItem('3')
@@ -50,45 +53,46 @@ class Exchage(QWidget):
         return startBox
 
     # 환전 도착 박스 생성
-
     def createEndBox(self):
 
         endBox = QGroupBox('End')
 
         # 두 번째 국가를 선택
         self.endNation = QComboBox()
+        self.endNation.addItem('국가 선택')
         self.endNation.addItem('1')  # 임시 값
         self.endNation.addItem('2')
         self.endNation.addItem('3')
 
-        # 두 번째 국가를 전송하면 메소드를 실행
-        self.endNation.activated[str].connect(self.getNation)
-
-        # 환전한 금액을 표시
+        # 환전한 금액을 표시할 LineEdit
         self.displayMoney = QLineEdit()
         self.displayMoney.setReadOnly(True)
         self.displayMoney.setAlignment(Qt.AlignRight)
 
+        # 환전 시작 버튼 생성
+        self.startBtn = QPushButton()
+        self.startBtn.setText('환전하기')
+        self.startBtn.clicked.connect(self.startCalculate)
+
         endLayout = QGridLayout()
         endLayout.addWidget(self.endNation, 0, 0)
+        endLayout.addWidget(self.startBtn, 1, 0)
         endLayout.addWidget(self.displayMoney, 1, 1)
 
         endBox.setLayout(endLayout)
 
         return endBox
 
-    # 사용자가 입력한 두 국가를 가져옴.
-
-    def getNation(self, nation):
+    # 사용자 입력 정보를 가져옴.
+    def getUserInput(self):
         n1 = self.startNation.currentText()
-        n2 = nation
-        print(n1, n2)
-        return (n1, n2)
+        n2 = self.endNation.currentText()
+        money = self.inputMoney.text()
+        print([n1, n2, money])
+        return [n1, n2, money]
 
-    # 사용자가 입력한 금액을 가져욤.
-    def getInputMoney(self):
-        print(self.inputMoney.text())
-        return self.inputMoney.text()
+    def startCalculate(self):
+        user_input = self.getUserInput()
 
 
 if __name__ == "__main__":
