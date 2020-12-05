@@ -7,6 +7,9 @@ from PyQt5.QtWidgets import QLineEdit, QComboBox, QLabel, QPushButton, QGroupBox
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.form_widget = Exchage(self)
+        self.setCentralWidget(self.form_widget)
+        self.statusBar().showMessage('환율: ')
 
 
 class Exchage(QWidget):
@@ -79,6 +82,6 @@ class Exchage(QWidget):
 if __name__ == "__main__":
     import sys
     app = QApplication(sys.argv)
-    calculator = Exchage()
+    calculator = MainWindow()
     calculator.show()
     sys.exit(app.exec_())
