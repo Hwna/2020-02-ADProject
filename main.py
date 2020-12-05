@@ -1,15 +1,15 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 from PyQt5.QtWidgets import QLayout, QGridLayout, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QLabel, QPushButton, QGroupBox
 
 
-class Exchage:
+class MainWindow(QMainWindow):
     def __init__(self):
         pass
 
 
-class MainWindow(QWidget):
+class Exchage(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.initUI()
@@ -68,6 +68,6 @@ class MainWindow(QWidget):
 if __name__ == "__main__":
     import sys
     app = QApplication(sys.argv)
-    calculator = MainWindow()
+    calculator = Exchage()
     calculator.show()
     sys.exit(app.exec_())
