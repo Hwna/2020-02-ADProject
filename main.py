@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 from PyQt5.QtWidgets import QLayout, QGridLayout, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QLabel, QPushButton, QGroupBox
 
-from exchange import calcExchange
+from exchange import calcExchange, addonExchange
 
 
 class MainWindow(QMainWindow):
@@ -36,13 +36,15 @@ class Exchange(QWidget):
         # 첫 번째 국가를 선택
         self.startNation = QComboBox()
         self.startNation.addItem('국가 선택')
-        self.startNation.addItem('1')  # 임시 값
-        self.startNation.addItem('2')
-        self.startNation.addItem('3')
+        self.startNation.addItem('USD')  # 임시 값
+        self.startNation.addItem('KRW')
+        self.startNation.addItem('DNK')
+        self.startNation.addItem('DEU')
+        self.startNation.addItem('INR')
 
         # 환전할 금액을 입력
         self.inputMoney = QLineEdit()
-        self.inputMoney.setPlaceholderText('환전할 금액을 입력하세요')
+        self.inputMoney.setPlaceholderText('환전할 금액을 입력하세요.')
 
         startLayout = QGridLayout()
         startLayout.addWidget(self.startNation, 0, 0)
@@ -60,9 +62,11 @@ class Exchange(QWidget):
         # 두 번째 국가를 선택
         self.endNation = QComboBox()
         self.endNation.addItem('국가 선택')
-        self.endNation.addItem('1')  # 임시 값
-        self.endNation.addItem('2')
-        self.endNation.addItem('3')
+        self.endNation.addItem('USD')  # 임시 값
+        self.endNation.addItem('KRW')
+        self.endNation.addItem('DNK')
+        self.endNation.addItem('DEU')
+        self.endNation.addItem('INR')
 
         # 환전한 금액을 표시할 LineEdit
         self.displayMoney = QLineEdit()
@@ -87,12 +91,19 @@ class Exchange(QWidget):
     def getUserInput(self):
         n1 = self.startNation.currentText()
         n2 = self.endNation.currentText()
-        money = self.inputMoney.text()
+        money = float(self.inputMoney.text())
         print([n1, n2, money])
         return [n1, n2, money]
 
+    # 환전 시작
     def startCalculate(self):
         user_input = self.getUserInput()
+        self.Calculator = calcExchange(user_input[0], user_input[1])
+        self.displayMoney.clear()
+        result = self.Calculator.calculate(user_input[2])
+        self.displayMoney.setText(str(result))
+        rate = self.Calculator.getRate()
+        print(rate)
 
 
 if __name__ == "__main__":
