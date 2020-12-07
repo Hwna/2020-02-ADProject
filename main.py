@@ -120,7 +120,6 @@ class Exchange(QWidget):
         n2 = self.endNation.currentText()
         n2 = nationList[n2]
         money = float(self.inputMoney.text())
-        print([n1, n2, money])
         return [n1, n2, money]
 
     # 환전 시작
@@ -137,8 +136,6 @@ class Exchange(QWidget):
         rateBox = QGroupBox("주요 국가 환율 변동 추이")
         rateChart = QGridLayout()
         for idx, lc in enumerate(leadingContries):
-            print(lc)
-            print(idx)
             lc_lbl = QLabel(lc + "\t" + addonExchange(lc).getChange())
             lc_lbl.setAlignment(Qt.AlignLeft)
             rateChart.addWidget(lc_lbl, idx, 0)
