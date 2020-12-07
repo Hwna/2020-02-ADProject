@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QLayout, QGridLayout, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QLineEdit, QComboBox, QLabel, QPushButton, QGroupBox
 
 from exchange import calcExchange, addonExchange
-from nationList import nationList
+from nationList import nationList, leadingContries
 
 
 class MainWindow(QMainWindow):
@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self.form_widget = Exchange(self)
         self.setCentralWidget(self.form_widget)
-        self.resize(350, 250)  # 임시 크기 조정
+        self.resize(350, 500)  # 임시 크기 조정
         self.statusBar().showMessage('')
 
 
@@ -29,6 +29,7 @@ class Exchange(QWidget):
 
         mainLayout.addWidget(self.createStartBox(), 0, 0)
         mainLayout.addWidget(self.createEndBox(), 1, 0)
+        mainLayout.addWidget(self.show_leading_contries(), 2, 0)
         self.setLayout(mainLayout)
 
     # 환전 시작 박스 생성
@@ -74,9 +75,6 @@ class Exchange(QWidget):
         for nation in list(nationList.keys()):
             self.endNation.addItem(nation)
 
-        self.endLbl = QLabel("", self)
-        self.endLbl.setAlignment(Qt.AlignCenter)
-
         # 국가를 선택하면 아이콘을 표시
         self.endNation.activated[str].connect(
             self.endIcon)
@@ -94,19 +92,20 @@ class Exchange(QWidget):
         endLayout = QGridLayout()
         endLayout.addWidget(self.endNation, 0, 0)
         endLayout.addWidget(self.startBtn, 1, 0)
-        #endLayout.addWidget(self.endLbl, 1, 0)
         endLayout.addWidget(self.displayMoney, 1, 1)
 
         endBox.setLayout(endLayout)
 
         return endBox
 
+    # 시작 국가의 화폐 기호를 가져옴
     def startIcon(self, nation):
         nation = nationList[nation]
         addon = addonExchange(nation)
         self.icon = addon.getIcon()
         # self.inputMoney.setText(self.icon)
 
+    # 도착 국가의 화폐 기호를 가져옴
     def endIcon(self, nation):
         nation = nationList[nation]
         addon = addonExchange(nation)
@@ -132,6 +131,19 @@ class Exchange(QWidget):
         self.displayMoney.setText(self.displayMoney.text() + " " + str(result))
         rate = self.Calculator.getRate()
         self.parent.statusBar().showMessage("환율: " + str(rate))
+
+    # 주요 국가의 환율 변동 추이
+    def show_leading_contries(self):
+        rateBox = QGroupBox("주요 국가 환율 변동 추이")
+        rateChart = QGridLayout()
+        for idx, lc in enumerate(leadingContries):
+            print(lc)
+            print(idx)
+            lc_lbl = QLabel(lc + "\t" + addonExchange(lc).getChange())
+            lc_lbl.setAlignment(Qt.AlignLeft)
+            rateChart.addWidget(lc_lbl, idx, 0)
+        rateBox.setLayout(rateChart)
+        return rateBox
 
 
 if __name__ == "__main__":
