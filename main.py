@@ -12,11 +12,13 @@ class MainWindow(QMainWindow):
         self.form_widget = Exchange(self)
         self.setCentralWidget(self.form_widget)
         self.resize(300, 250)  # 임시 크기 조정
+        self.statusBar().showMessage('')
 
 
 class Exchange(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
+    def __init__(self, parent):
+        super(Exchange, self).__init__(parent)
+        self.parent = parent
         self.initUI()
 
     def initUI(self):
@@ -39,15 +41,24 @@ class Exchange(QWidget):
         self.startNation.addItem('USD')  # 임시 값
         self.startNation.addItem('KRW')
         self.startNation.addItem('DNK')
-        self.startNation.addItem('DEU')
+        self.startNation.addItem('EUR')
         self.startNation.addItem('INR')
+
+        self.inputLbl = QLabel("", self)
+        self.inputLbl.setAlignment(Qt.AlignCenter)
+
+        # 국가를 선택하면 아이콘을 표시
+        self.startNation.activated[str].connect(
+            self.startIcon)
 
         # 환전할 금액을 입력
         self.inputMoney = QLineEdit()
         self.inputMoney.setPlaceholderText('환전할 금액을 입력하세요.')
+        self.inputMoney.setAlignment(Qt.AlignRight)
 
         startLayout = QGridLayout()
         startLayout.addWidget(self.startNation, 0, 0)
+        #startLayout.addWidget(self.inputLbl, 1, 0)
         startLayout.addWidget(self.inputMoney, 1, 1)
 
         startBox.setLayout(startLayout)
@@ -65,8 +76,15 @@ class Exchange(QWidget):
         self.endNation.addItem('USD')  # 임시 값
         self.endNation.addItem('KRW')
         self.endNation.addItem('DNK')
-        self.endNation.addItem('DEU')
+        self.endNation.addItem('EUR')
         self.endNation.addItem('INR')
+
+        self.endLbl = QLabel("", self)
+        self.endLbl.setAlignment(Qt.AlignCenter)
+
+        # 국가를 선택하면 아이콘을 표시
+        self.endNation.activated[str].connect(
+            self.endIcon)
 
         # 환전한 금액을 표시할 LineEdit
         self.displayMoney = QLineEdit()
@@ -81,11 +99,23 @@ class Exchange(QWidget):
         endLayout = QGridLayout()
         endLayout.addWidget(self.endNation, 0, 0)
         endLayout.addWidget(self.startBtn, 1, 0)
+        #endLayout.addWidget(self.endLbl, 1, 0)
         endLayout.addWidget(self.displayMoney, 1, 1)
 
         endBox.setLayout(endLayout)
 
         return endBox
+
+    def startIcon(self, nation):
+        addon = addonExchange(nation)
+        self.icon = addon.getIcon()
+        # self.inputMoney.setText(self.icon)
+
+    def endIcon(self, nation):
+        addon = addonExchange(nation)
+        self.icon = addon.getIcon()
+        self.displayMoney.clear()
+        self.displayMoney.setText(self.icon)
 
     # 사용자 입력 정보를 가져옴.
     def getUserInput(self):
@@ -99,11 +129,10 @@ class Exchange(QWidget):
     def startCalculate(self):
         user_input = self.getUserInput()
         self.Calculator = calcExchange(user_input[0], user_input[1])
-        self.displayMoney.clear()
         result = self.Calculator.calculate(user_input[2])
-        self.displayMoney.setText(str(result))
+        self.displayMoney.setText(self.displayMoney.text() + str(result))
         rate = self.Calculator.getRate()
-        print(rate)
+        self.parent.statusBar().showMessage("환율: " + str(rate))
 
 
 if __name__ == "__main__":
