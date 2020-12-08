@@ -14,6 +14,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.form_widget)
         self.resize(350, 500)  # 임시 크기 조정
         self.statusBar().showMessage('')
+        self.setWindowTitle("환율 계산기")
 
 
 class Exchange(QWidget):
@@ -23,7 +24,6 @@ class Exchange(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("환율 계산기")
 
         mainLayout = QGridLayout()
 
