@@ -51,6 +51,8 @@ class Exchange(QWidget):
         # 국가를 선택하면 아이콘을 표시
         self.startNation.activated[str].connect(
             self.startIcon)
+
+        # 국가가 선택되었는지를 판단
         self.startNation.activated[str].connect(
             self.checkSelect1)
 
@@ -83,6 +85,7 @@ class Exchange(QWidget):
         self.endNation.activated[str].connect(
             self.endIcon)
 
+        # 국가가 선택되었는지 판단
         self.endNation.activated[str].connect(
             self.checkSelect2)
 
