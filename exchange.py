@@ -42,8 +42,16 @@ class addonExchange:
             self.code = '▼'
         else :
             self.code = '-'
-        self.changeChart = (str(round(self.todayTsr, 2)) + " / " + self.code + " " + str(self.tsrChange)+ " / " + str(self.changeRate) + "%")
+        self.changeChart = [str(round(self.todayTsr, 2)), (self.code + " " + str(self.tsrChange)), (str(self.changeRate) + "%")]
         return self.changeChart
+
+    def getChangeList(self):
+        self.graphList = []
+        for i in range(1, 8) :
+            self.day = datetime.today() - timedelta(i)
+            self.tradingStandardRate = round((self.c).convert(self.nation, 'KRW',1 , self.day),2)
+            self.graphList.append(self.tradingStandardRate)
+        return self.graphList
 
         
 
@@ -55,3 +63,4 @@ if __name__ == '__main__':
     print(cal1.getRate())
     print(cal1.calculate(1))
     print(cal2.getChange())
+    print(cal2.getChangeList())
