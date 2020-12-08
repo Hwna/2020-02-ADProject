@@ -22,6 +22,8 @@ class Exchange(QWidget):
         super(Exchange, self).__init__(parent)
         self.parent = parent
         self.initUI()
+        self.selected1 = False
+        self.selected2 = False
 
     def initUI(self):
 
@@ -49,6 +51,8 @@ class Exchange(QWidget):
         # 국가를 선택하면 아이콘을 표시
         self.startNation.activated[str].connect(
             self.startIcon)
+        self.startNation.activated[str].connect(
+            self.checkSelect1)
 
         # 환전할 금액을 입력
         self.inputMoney = QLineEdit()
@@ -79,6 +83,9 @@ class Exchange(QWidget):
         self.endNation.activated[str].connect(
             self.endIcon)
 
+        self.endNation.activated[str].connect(
+            self.checkSelect2)
+
         # 환전한 금액을 표시할 LineEdit
         self.displayMoney = QLineEdit()
         self.displayMoney.setReadOnly(True)
@@ -88,6 +95,7 @@ class Exchange(QWidget):
         self.startBtn = QPushButton()
         self.startBtn.setText('환전하기')
         self.startBtn.clicked.connect(self.startCalculate)
+        self.startBtn.setEnabled(False)
 
         endLayout = QGridLayout()
         endLayout.addWidget(self.endNation, 0, 0)
@@ -121,6 +129,18 @@ class Exchange(QWidget):
         n2 = nationList[n2]
         money = float(self.inputMoney.text())
         return [n1, n2, money]
+
+    #시작 국가가 선택되었는지 확인
+    def checkSelect1(self):
+        self.selected1 = True
+        if(self.selected2 == True):
+            self.startBtn.setEnabled(True)
+    
+    #도착 국가가 선택되었는지 확인
+    def checkSelect2(self):
+        self.selected2 = True
+        if(self.selected1 == True):
+            self.startBtn.setEnabled(True)
 
     # 환전 시작
     def startCalculate(self):
