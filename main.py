@@ -102,16 +102,16 @@ class Exchange(QWidget):
     def startIcon(self, nation):
         nation = nationList[nation]
         addon = addonExchange(nation)
-        self.icon = addon.getIcon()
-        # self.inputMoney.setText(self.icon)
+        self.startIcon = addon.getIcon()
+        # self.inputMoney.setText(self.startIcon)
 
     # 도착 국가의 화폐 기호를 가져옴
     def endIcon(self, nation):
         nation = nationList[nation]
         addon = addonExchange(nation)
-        self.icon = addon.getIcon()
+        self.endIcon = addon.getIcon()
         self.displayMoney.clear()
-        self.displayMoney.setText(self.icon)
+        self.displayMoney.setText(self.endIcon)
 
     # 사용자 입력 정보를 가져옴.
     def getUserInput(self):
@@ -127,11 +127,11 @@ class Exchange(QWidget):
         user_input = self.getUserInput()
         self.Calculator = calcExchange(user_input[0], user_input[1])
         result = self.Calculator.calculate(user_input[2])
-        self.displayMoney.setText(self.displayMoney.text() + " " + str(result))
+        self.displayMoney.setText(self.endIcon + " " + str(result))
         rate = self.Calculator.getRate()
         self.parent.statusBar().showMessage("환율: " + str(rate))
 
-    # 주요 국가의 환율 변동 추이
+    # 주요 국가의 환율 변동 추이 (표)
     def show_leading_contries(self):
         rateBox = QGroupBox("주요 국가 환율 변동 추이")
         rateChart = QGridLayout()
@@ -149,10 +149,30 @@ class Exchange(QWidget):
         for idx, lc in enumerate(leadingContries):
             for i, info in enumerate(addonExchange(lc).getChange()):
                 lc_lbl = QLabel(info)
+                if i == 2:
+                    if '▲' in info:
+                        lc_lbl.setStyleSheet("color: #5CB5FF;")
+                    elif '▼' in info:
+                        lc_lbl.setStyleSheet("color: #FB6868;")
+                elif i == 3:
+                    if '-' in info:
+                        lc_lbl.setStyleSheet("color: #FB6868;")
+                    else:
+                        lc_lbl.setStyleSheet("color: #5CB5FF;")
+
                 lc_lbl.setAlignment(Qt.AlignLeft)
                 rateChart.addWidget(lc_lbl, idx + 1, i)
+
         rateBox.setLayout(rateChart)
+        # rateBox.setStyleSheet(
+        #     "background-color: #ffffff;"
+        # )
         return rateBox
+
+    # 시작 국가의 최근 환율 변동 추이 (그래프)
+
+    def draw_graph(self):
+        return
 
 
 if __name__ == "__main__":
