@@ -42,7 +42,7 @@ class addonExchange:
             self.code = '▼'
         else :
             self.code = '-'
-        self.changeChart = (str(round(self.todayTsr, 2)) + " / " + self.code + " " + str(self.tsrChange)+ " / " + str(self.changeRate) + "%")
+        self.changeChart = [str(round(self.todayTsr, 2)), (self.code + " " + str(self.tsrChange)), (str(self.changeRate) + "%")]
         return self.changeChart
 
         
