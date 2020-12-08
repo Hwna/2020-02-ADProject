@@ -135,10 +135,22 @@ class Exchange(QWidget):
     def show_leading_contries(self):
         rateBox = QGroupBox("주요 국가 환율 변동 추이")
         rateChart = QGridLayout()
+
+        lbl1 = QLabel("통화")
+        lbl2 = QLabel("매매기준율")
+        lbl3 = QLabel("전일대비")
+        lbl4 = QLabel("등락률")
+
+        rateChart.addWidget(lbl1, 0, 0)
+        rateChart.addWidget(lbl2, 0, 1)
+        rateChart.addWidget(lbl3, 0, 2)
+        rateChart.addWidget(lbl4, 0, 3)
+
         for idx, lc in enumerate(leadingContries):
-            lc_lbl = QLabel(lc + "\t" + addonExchange(lc).getChange())
-            lc_lbl.setAlignment(Qt.AlignLeft)
-            rateChart.addWidget(lc_lbl, idx, 0)
+            for i, info in enumerate(addonExchange(lc).getChange()):
+                lc_lbl = QLabel(info)
+                lc_lbl.setAlignment(Qt.AlignLeft)
+                rateChart.addWidget(lc_lbl, idx + 1, i)
         rateBox.setLayout(rateChart)
         return rateBox
 
