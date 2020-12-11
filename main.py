@@ -142,7 +142,7 @@ class Exchange(QWidget):
         # 입력이 숫자가 아닌 상황에 대한 예외 처리
         except ValueError:
             self.alert = QMessageBox.critical(
-                self, '경고!', '숫자를 입력해주세요.', QMessageBox.Ok)
+                self, '경고!', '형식이 올바르지 않습니다.', QMessageBox.Ok)
             self.inputMoney.setText(self.startIcon + " ")
             return
         return self.startCalculate([n1, n2, money])
