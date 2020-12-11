@@ -111,18 +111,23 @@ class Exchange(QWidget):
 
     # 시작 국가의 화폐 기호를 가져옴
     def startIcon(self, nation):
-        nation = nationList[nation]
-        addon = addonExchange(nation)
-        self.startIcon = addon.getIcon()
-        # self.inputMoney.setText(self.startIcon)
+        try:
+            nation = nationList[nation]
+            addon = addonExchange(nation)
+            self.startIcon = addon.getIcon()
+            self.inputMoney.setText(self.startIcon + " ")
+        except KeyError:
+            self.inputMoney.clear()
 
     # 도착 국가의 화폐 기호를 가져옴
     def endIcon(self, nation):
-        nation = nationList[nation]
-        addon = addonExchange(nation)
-        self.endIcon = addon.getIcon()
-        self.displayMoney.clear()
-        self.displayMoney.setText(self.endIcon)
+        try:
+            nation = nationList[nation]
+            addon = addonExchange(nation)
+            self.endIcon = addon.getIcon()
+            self.displayMoney.setText(self.endIcon)
+        except KeyError:
+            self.displayMoney.clear()
 
     # 사용자 입력 정보를 가져옴.
     def getUserInput(self):
@@ -131,11 +136,14 @@ class Exchange(QWidget):
         n2 = self.endNation.currentText()
         n2 = nationList[n2]
         try:
-            money = float(self.inputMoney.text())
+            money = self.inputMoney.text()
+            money = float(money.split(self.startIcon)[-1])
+
+        # 입력이 숫자가 아닌 상황에 대한 예외 처리
         except ValueError:
             self.alert = QMessageBox.critical(
-                self, '경고!', '숫자를 입력해주세요.', QMessageBox.Yes)
-            self.inputMoney.clear()
+                self, '경고!', '숫자를 입력해주세요.', QMessageBox.Ok)
+            self.inputMoney.setText(self.startIcon + " ")
             return
         return self.startCalculate([n1, n2, money])
 
