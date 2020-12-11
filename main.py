@@ -1,7 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 from PyQt5.QtWidgets import QLayout, QGridLayout, QVBoxLayout, QHBoxLayout
-from PyQt5.QtWidgets import QLineEdit, QComboBox, QLabel, QPushButton, QGroupBox
+from PyQt5.QtWidgets import QLineEdit, QComboBox, QLabel, QPushButton, QGroupBox, QMessageBox
 
 from exchange import calcExchange, addonExchange
 from nationList import nationList, leadingContries
@@ -97,7 +97,7 @@ class Exchange(QWidget):
         # 환전 시작 버튼 생성
         self.startBtn = QPushButton()
         self.startBtn.setText('환전하기')
-        self.startBtn.clicked.connect(self.startCalculate)
+        self.startBtn.clicked.connect(self.getUserInput)
         self.startBtn.setEnabled(False)
 
         endLayout = QGridLayout()
@@ -130,8 +130,14 @@ class Exchange(QWidget):
         n1 = nationList[n1]
         n2 = self.endNation.currentText()
         n2 = nationList[n2]
-        money = float(self.inputMoney.text())
-        return [n1, n2, money]
+        try:
+            money = float(self.inputMoney.text())
+        except ValueError:
+            self.alert = QMessageBox.critical(
+                self, '경고!', '숫자를 입력해주세요.', QMessageBox.Yes)
+            self.inputMoney.clear()
+            return
+        return self.startCalculate([n1, n2, money])
 
     # 시작 국가가 선택되었는지 확인
     def checkSelect1(self):
@@ -146,8 +152,7 @@ class Exchange(QWidget):
             self.startBtn.setEnabled(True)
 
     # 환전 시작
-    def startCalculate(self):
-        user_input = self.getUserInput()
+    def startCalculate(self, user_input):
         self.Calculator = calcExchange(user_input[0], user_input[1])
         result = self.Calculator.calculate(user_input[2])
         self.displayMoney.setText(self.endIcon + " " + str(result))
@@ -193,7 +198,6 @@ class Exchange(QWidget):
         return rateBox
 
     # 시작 국가의 최근 환율 변동 추이 (그래프)
-
     def draw_graph(self):
         return
 
