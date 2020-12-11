@@ -133,13 +133,13 @@ class Exchange(QWidget):
         money = float(self.inputMoney.text())
         return [n1, n2, money]
 
-    #시작 국가가 선택되었는지 확인
+    # 시작 국가가 선택되었는지 확인
     def checkSelect1(self):
         self.selected1 = True
         if(self.selected2 == True):
             self.startBtn.setEnabled(True)
-    
-    #도착 국가가 선택되었는지 확인
+
+    # 도착 국가가 선택되었는지 확인
     def checkSelect2(self):
         self.selected2 = True
         if(self.selected1 == True):
@@ -174,14 +174,14 @@ class Exchange(QWidget):
                 lc_lbl = QLabel(info)
                 if i == 2:
                     if '▲' in info:
-                        lc_lbl.setStyleSheet("color: #5CB5FF;")
-                    elif '▼' in info:
                         lc_lbl.setStyleSheet("color: #FB6868;")
+                    elif '▼' in info:
+                        lc_lbl.setStyleSheet("color: #5CB5FF;")
                 elif i == 3:
                     if '-' in info:
-                        lc_lbl.setStyleSheet("color: #FB6868;")
-                    else:
                         lc_lbl.setStyleSheet("color: #5CB5FF;")
+                    else:
+                        lc_lbl.setStyleSheet("color: #FB6868;")
 
                 lc_lbl.setAlignment(Qt.AlignLeft)
                 rateChart.addWidget(lc_lbl, idx + 1, i)
