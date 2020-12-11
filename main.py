@@ -1,10 +1,16 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 from PyQt5.QtWidgets import QLayout, QGridLayout, QVBoxLayout, QHBoxLayout
-from PyQt5.QtWidgets import QLineEdit, QComboBox, QLabel, QPushButton, QGroupBox, QMessageBox
+from PyQt5.QtWidgets import QLineEdit, QTextEdit, QComboBox, QLabel, QPushButton, QGroupBox, QMessageBox, QTabWidget
+
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+
 
 from exchange import calcExchange, addonExchange
 from nationList import nationList, leadingContries
+from graph import get_values
 
 
 class MainWindow(QMainWindow):
@@ -12,7 +18,7 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self.form_widget = Exchange(self)
         self.setCentralWidget(self.form_widget)
-        self.resize(350, 500)  # 임시 크기 조정
+        self.resize(850, 400)  # 임시 크기 조정
         self.statusBar().showMessage('')
         self.setWindowTitle("환율 계산기")
 
@@ -27,12 +33,28 @@ class Exchange(QWidget):
 
     def initUI(self):
 
-        mainLayout = QGridLayout()
+        tabs = QTabWidget()
+        tab1 = QWidget()
+        tab2 = QWidget()
 
-        mainLayout.addWidget(self.createStartBox(), 0, 0)
-        mainLayout.addWidget(self.createEndBox(), 1, 0)
-        mainLayout.addWidget(self.show_leading_contries(), 2, 0)
-        self.setLayout(mainLayout)
+        self.mainLayout = QGridLayout()
+        subLayout = QGridLayout()
+
+        self.mainLayout.addWidget(self.createStartBox(), 0, 0)
+        self.mainLayout.addWidget(self.createEndBox(), 1, 0)
+        self.mainLayout.addWidget(self.draw_graph('USD'), 0, 1, 2, 1)
+        subLayout.addWidget(self.show_leading_contries(), 0, 0)
+
+        tabs.addTab(tab1, '계산기')
+        tabs.addTab(tab2, '주요 국가')
+
+        tab1.setLayout(self.mainLayout)
+        tab2.setLayout(subLayout)
+
+        mainWindow = QVBoxLayout()
+        mainWindow.addWidget(tabs)
+
+        self.setLayout(mainWindow)
 
     # 환전 시작 박스 생성
     def createStartBox(self):
@@ -135,6 +157,7 @@ class Exchange(QWidget):
         n1 = nationList[n1]
         n2 = self.endNation.currentText()
         n2 = nationList[n2]
+        self.draw_graph(n2)
         try:
             money = self.inputMoney.text()
             money = float(money.split(self.startIcon)[-1])
@@ -185,9 +208,11 @@ class Exchange(QWidget):
         for idx, lc in enumerate(leadingContries):
             for i, info in enumerate(addonExchange(lc).getChange()):
                 lc_lbl = QLabel(info)
+
                 if i == 2:
                     if '▲' in info:
-                        lc_lbl.setStyleSheet("color: #FB6868;")
+                        lc_lbl.setStyleSheet(
+                            "color: #FB6868;")
                     elif '▼' in info:
                         lc_lbl.setStyleSheet("color: #5CB5FF;")
                 elif i == 3:
@@ -206,8 +231,19 @@ class Exchange(QWidget):
         return rateBox
 
     # 시작 국가의 최근 환율 변동 추이 (그래프)
-    def draw_graph(self):
-        return
+    def draw_graph(self, nation):
+        graphBox = QGroupBox('그래프')
+        graphLayout = QGridLayout()
+
+        canvas = FigureCanvas(Figure(figsize=(4, 3)))
+        ax = canvas.figure.subplots()
+        ax.plot(('G1', 'G2', 'G3'), addonExchange(nation).getChangeList())
+
+        graphLayout.addWidget(canvas, 0, 0)
+        graphBox.setLayout(graphLayout)
+
+        self.mainLayout.replaceWidget(self, "???", graphBox)
+        return graphBox
 
 
 if __name__ == "__main__":

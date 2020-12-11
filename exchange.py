@@ -51,7 +51,7 @@ class addonExchange:
 
     def getChangeList(self):
         self.graphList = []
-        for i in range(1, 8):
+        for i in range(1, 4):
             self.day = datetime.today() - timedelta(i)
             self.tradingStandardRate = round(
                 (self.c).convert(self.nation, 'KRW', 1, self.day), 2)
