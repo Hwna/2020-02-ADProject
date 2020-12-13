@@ -12,7 +12,7 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
         self.form_widget = Exchange(self)
         self.setCentralWidget(self.form_widget)
-        self.resize(350, 500)  # 임시 크기 조정
+        self.resize(350, 500)
         self.statusBar().showMessage('')
         self.setWindowTitle("환율 계산기")
 
@@ -21,9 +21,9 @@ class Exchange(QWidget):
     def __init__(self, parent):
         super(Exchange, self).__init__(parent)
         self.parent = parent
-        self.initUI()
         self.selected1 = False
         self.selected2 = False
+        self.initUI()
 
     def initUI(self):
 
@@ -45,9 +45,6 @@ class Exchange(QWidget):
         for nation in list(nationList.keys()):
             self.startNation.addItem(nation)
 
-        self.inputLbl = QLabel("", self)
-        self.inputLbl.setAlignment(Qt.AlignCenter)
-
         # 국가를 선택하면 아이콘을 표시
         self.startNation.activated[str].connect(
             self.startIcon)
@@ -63,7 +60,6 @@ class Exchange(QWidget):
 
         startLayout = QGridLayout()
         startLayout.addWidget(self.startNation, 0, 0)
-        #startLayout.addWidget(self.inputLbl, 1, 0)
         startLayout.addWidget(self.inputMoney, 1, 1)
 
         startBox.setLayout(startLayout)
@@ -145,7 +141,7 @@ class Exchange(QWidget):
                 self, '경고!', '형식이 올바르지 않습니다.', QMessageBox.Ok)
             self.inputMoney.setText(self.startIcon + " ")
             return
-        return self.startCalculate([n1, n2, money])
+        self.startCalculate([n1, n2, money])
 
     # 시작 국가가 선택되었는지 확인
     def checkSelect1(self):
@@ -200,14 +196,7 @@ class Exchange(QWidget):
                 rateChart.addWidget(lc_lbl, idx + 1, i)
 
         rateBox.setLayout(rateChart)
-        # rateBox.setStyleSheet(
-        #     "background-color: #ffffff;"
-        # )
         return rateBox
-
-    # 시작 국가의 최근 환율 변동 추이 (그래프)
-    def draw_graph(self):
-        return
 
 
 if __name__ == "__main__":
